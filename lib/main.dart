@@ -20,16 +20,17 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     final bigStyle = TextStyle(
       fontSize: 34.0,
       fontWeight: FontWeight.w600,
     );
 
-    Widget weatherSection = new Text(
-      "感冒:\n最高\n最低\n风向风力\n类型",
-      style: bigStyle,
-    );
+    Widget weatherText(String text) {
+      return new Text(
+        text,
+        style: bigStyle,
+      );
+    }
 
     return new Scaffold(
       appBar: AppBar(
@@ -50,27 +51,56 @@ class HomePage extends StatelessWidget {
               child: new Container(
                 width: MediaQuery.of(context).size.width,
                 height: 500.0,
-                color: Colors.red,
-                child: weatherSection,
+                // color: Colors.red,
+                child: ListView(
+                  children: <Widget>[
+                    weatherText("北京"),
+                    weatherText("感冒:12312312312不感冒不感冒不感冒"),
+                    weatherText("最高:"),
+                    weatherText("最低:"),
+                    weatherText("风力风向:"),
+                    weatherText("类型:"),
+                  ],
+                ),
               ),
             ),
             //定位按钮
             new Positioned(
               top: 510.0,
-              child: new Container(
-                width: 100.0,
-                height: 60.0,
-                child: new RaisedButton(
-                  onPressed: (){},
-                  color: Colors.orange,
-                  highlightColor: Colors.black,
-                  child: new Text("Beijing"),
-                ),
-              ),
+              width: 64.0,
+              height: 64.0,
+              child: LoctionButtonWidget(),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+class LoctionButtonWidget extends StatefulWidget {
+  @override
+  createState() {
+    return LoctionButtonWidgetState();
+  }
+}
+
+class LoctionButtonWidgetState extends State<LoctionButtonWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return new RaisedButton(
+      child: new Icon(
+        Icons.location_on,
+        color: Colors.green,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(32.0),
+      ),
+      onPressed: _loctionButtonAction,
+    );
+  }
+
+  void _loctionButtonAction() {
+    debugPrint("loctionButtonAction");
   }
 }
