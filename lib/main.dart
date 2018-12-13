@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'loctionWidget.dart'; //位置界面
+import 'package:dio/dio.dart'; //网络请求
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
@@ -10,38 +14,84 @@ class MyApp extends StatelessWidget {
       title: "Rainweat Flutter",
       home: HomePage(),
       theme: ThemeData(
-        primaryColor: Colors.green,
+        primaryColor: Colors.white,
       ),
     );
   }
 }
 
+class HomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return HomePageState();
+  }
+}
+
+//实例化网络类
+Dio dio = new Dio();
+
 //主页
-class HomePage extends StatelessWidget {
+class HomePageState extends State<HomePage> {
+  String ganMaoString; //感冒
+  String loctionString = "北京";
+  Color backColor = Colors.white;
+  int currentInt;//温度
+
+  //网络请求
+  getIPAddress() async {
+    Response response;
+    String url = "http://wthrcdn.etouch.cn/weather_mini?city=北京";
+    response = await dio.get(url);
+    String jsonStr = response.data.toString();
+
+    Map JsonMap = json.decode(jsonStr);
+    setState(() {
+      ganMaoString = JsonMap["data"]["ganmao"];
+      currentInt = int.parse(JsonMap["data"]["wendu"]);
+
+      if (currentInt >30) {
+        backColor = Colors.red[900];
+      }else if (currentInt <30 && currentInt >20) {
+        backColor = Colors.red;
+      }else if (currentInt <20 && currentInt >10) {
+        backColor = Colors.green;
+      }else if (currentInt <10 && currentInt >0) {
+        backColor = Colors.green[300];
+      }else if (currentInt <0 && currentInt >-10) {
+        backColor = Colors.blue[200];
+      }else if (currentInt <-10) {
+        backColor = Colors.blue;
+      }
+    });
+  }
+
+  final bigStyle = TextStyle(
+    fontSize: 34.0,
+    fontWeight: FontWeight.w600,
+  );
+
+  //文字
+  weatherText(String string) {
+    return new Text(
+      string,
+      style: bigStyle,
+    );
+  }
+
+  //重写
+  @override void initState() {
+    super.initState();
+
+    getIPAddress();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bigStyle = TextStyle(
-      fontSize: 34.0,
-      fontWeight: FontWeight.w600,
-    );
-
-    Widget weatherText(String text) {
-      return new Text(
-        text,
-        style: bigStyle,
-      );
-    }
-
     return new Scaffold(
-      appBar: AppBar(
-        title: new Text(
-          "rainweat Flutter",
-        ),
-      ),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        color: Colors.green,
+        color: backColor,
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
@@ -54,19 +104,43 @@ class HomePage extends StatelessWidget {
                 // color: Colors.red,
                 child: ListView(
                   children: <Widget>[
-                    weatherText("北京"),
-                    weatherText("感冒:12312312312不感冒不感冒不感冒"),
-                    weatherText("最高:"),
-                    weatherText("最低:"),
-                    weatherText("风力风向:"),
-                    weatherText("类型:"),
+                    //位置
+                    new Container(
+                      padding: EdgeInsets.all(15.0),
+                      child: weatherText("$loctionString"),
+                    ),
+                    //感冒
+                    new Container(
+                      padding: EdgeInsets.all(25.0),
+                      child: new Text(
+                        "$ganMaoString",
+                        style: TextStyle(
+                          fontSize: 32.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    //温度
+                    new Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 40),
+                      child: new Text(
+                        "$currentInt °C",
+                        style: TextStyle(
+                          fontSize: 48.0,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
             //定位按钮
             new Positioned(
-              top: 510.0,
+              bottom: 44.0,
               width: 64.0,
               height: 64.0,
               child: LoctionButtonWidget(),
@@ -78,6 +152,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
+//定位按钮
 class LoctionButtonWidget extends StatefulWidget {
   @override
   createState() {
@@ -102,5 +177,13 @@ class LoctionButtonWidgetState extends State<LoctionButtonWidget> {
 
   void _loctionButtonAction() {
     debugPrint("loctionButtonAction");
+    pushLoction();
+  }
+
+  //跳转位置界面
+  void pushLoction() {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new loctionWidget();
+    }));
   }
 }
