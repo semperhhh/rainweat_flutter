@@ -7,12 +7,12 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "launchiPhonePortraitiOS89_375x667pt@2x.png",
+      "filename" : "LaunchImage@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "launchiPhoneXPortraitiOS11_375x812pt@3x.png",
+      "filename" : "LaunchImage@3x.png",
       "scale" : "3x"
     }
   ],

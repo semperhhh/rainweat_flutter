@@ -128,7 +128,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       return new loctionWidget();
     })).then((onValue) {
       print("点击位置返回 -- $onValue");
-      if (onValue == null && onValue == "") {
+      if (onValue == null || onValue == "") {
         return;
       }
       locationString = onValue;
