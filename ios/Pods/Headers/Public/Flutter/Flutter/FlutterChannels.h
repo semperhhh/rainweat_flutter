@@ -1,1 +1,1 @@
-../../../../../../../../../../../Applications/flutter/bin/cache/artifacts/engine/ios/Flutter.framework/Headers/FlutterChannels.h
+../../../../../../../../../../../Applications/flutter/bin/cache/artifacts/engine/ios-release/Flutter.framework/Headers/FlutterChannels.h
